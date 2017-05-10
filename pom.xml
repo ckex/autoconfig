@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ckex</groupId>
+    <artifactId>autoconfig</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>autoconfig.a</module>
+        <module>autoconfig.b</module>
+    </modules>
+    <packaging>pom</packaging>
+
+    <properties>
+        <autoconfig.plugin.version>1.2</autoconfig.plugin.version>
+        <antx.conf>${antx.path}</antx.conf>
+    </properties>
+
+    <profiles>
+        <!-- 开发环境，默认激活 -->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <env>dev</env>
+                <antx.path>../auto-configs/dev/auto-dev.properties</antx.path>
+                <outputDir>${project.build.directory}</outputDir>
+                <projectName>${project.artifactId}</projectName>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault><!--默认启用的是dev环境配置 -->
+            </activation>
+        </profile>
+        <!-- 测试环境 -->
+        <profile>
+            <id>test</id>
+            <properties>
+                <env>test</env>
+                <antx.path>../auto-configs/test/auto-test.properties</antx.path>
+                <outputDir>${project.build.directory}</outputDir>
+                <projectName>${project.artifactId}</projectName>
+            </properties>
+        </profile>
+        <!-- 生产环境 -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <env>prod</env>
+                <antx.path>../auto-configs/prod/auto-prod.properties</antx.path>
+                <outputDir>${project.build.directory}</outputDir>
+                <projectName>${project.artifactId}</projectName>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.alibaba.citrus.tool</groupId>
+                    <artifactId>autoconfig-maven-plugin</artifactId>
+                    <version>${autoconfig.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <filters>
+            <filter>${antx.conf}</filter>
+        </filters>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
+    </build>
+
+
+</project>
